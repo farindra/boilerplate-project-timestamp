@@ -26,20 +26,26 @@ app.get("/api/hello", function (req, res) {
 });
 
 // your first API endpoint... 
-app.get("/api/timestamp/:date", function (req, res) {
+app.get("/api/timestamp/:date?", function (req, res) {
   // creating a date object
   let date = new Date();
+  console.log(date.getTime());
+  if (req.params.date ? true : false) {
   // if the given parameter is a number (timestamp)
-  if(/^\d*$/.test(req.params.date)){
-    date.setTime(req.params.date);
+    if(/^\d*$/.test(req.params.date)){
+      date.setTime(req.params.date);
+    } 
+    // else we just create a new date parsing the string given
+    else {
+      date =  new Date(req.params.date);
+    }
+
   } 
-  // else we just create a new date parsing the string given
-  else {
-    date = new Date(req.params.date);
-  }
   
+  console.log(date);
+
   // if the date is invalid
-  if(!date.getTime()) res.send(JSON.stringify({error: "Invalid date given"}))
+  if(!date.getTime()) res.json({error: "Invalid Date"})
   // else, we send the object with two members (unix and natural)
   else res.json({
     unix: date.getTime(),
